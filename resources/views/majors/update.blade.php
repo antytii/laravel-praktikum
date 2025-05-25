@@ -1,35 +1,45 @@
 <x-default-layout title="Major" section_title="Edit Major Data">
-    <div class="grid grid-cols-1">
-        <form action="{{ route('majors.update', $major->id) }}" method="POST"
-            class="flex flex-col gap-4 px-6 py-4 bg-white border border-zinc-300 shadow col-span-1">
+    <div class="grid grid-cols-3">
+        <form action="{{ route('majors.update', $major->id) }}" method="POST" 
+            class="flex flex-col gap-4 px-6 py-4 bg-white border border-zinc-300 shadow col-span-3 md:col-span-2">
             @csrf
-            @method("PUT")
-
-            <div class="flex flex-col gap-2">
-                <label for="name">Major Name</label>
-                <input type="text" id="name" name="name"
-                    class="px-3 py-2 border border-zinc-300 bg-slate-50"
-                    value="{{ $major->name }}"
-                    placeholder="e.g., Teknik Informatika" />
+            @method('PUT')
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-2">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name"
+                        class="px-3 py-2 border border-zinc-300 bg-slate-50"
+                        placeholder="Major Name" value="{{ old('name', $major->name) }}">
+                    @error('name')
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="code">Majors Code</label>
+                    <input type="text" id="code" name="code"
+                        class="px-3 py-2 border border-zinc-300 bg-slate-50"
+                        placeholder="Major ID (e.g., F551)" value="{{ old('code', $major->code) }}">
+                    @error('code')
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
             </div>
-
-            <div class="flex flex-col gap-2">
-                <label for="code">Major Code</label>
-                <input type="text" id="code" name="code"
-                    class="px-3 py-2 border border-zinc-300 bg-slate-50"
-                    value="{{ $major->code }}"
-                    placeholder="e.g., TIF" />
-            </div>
-
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2 col-span-2">
                 <label for="description">Description</label>
-                <textarea id="description" name="description"
-                    class="px-3 py-2 border border-zinc-300 bg-slate-50"
-                    rows="3"
-                    placeholder="Write a brief description...">{{ $major->description }}</textarea>
+                <textarea id="description" name="description" rows="5"
+                    class="px-3 py-2 border border-zinc-300 bg-slate-50 resize-none"
+                    placeholder="Write description here...">{{ old('description', $major->description) }}</textarea>
+                @error('description')
+                    <div class="text-red-500 text-sm mt-1">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
-
-            <div class="self-end flex gap-2 mt-4">
+            <div class="self-end flex gap-2">
                 <a href="{{ route('majors.index') }}"
                     class="bg-slate-50 border border-slate-500 text-slate-500 px-3 py-2 cursor-pointer">
                     <span>Cancel</span>
