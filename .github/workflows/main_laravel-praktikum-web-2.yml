@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy PHP app to Azure Web App - laravel-praktikum-web-2
+name: Build and deploy PHP app to Azure Web App - praktikumweb2
 
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -23,6 +23,16 @@ jobs:
         with:
           php-version: '8.2'
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: install npm dependencies and build frontend
+        run:
+          npm install
+          npm run build
+          
       - name: Check if composer.json exists
         id: check_files
         uses: andstor/file-existence-action@v1
@@ -32,9 +42,9 @@ jobs:
       - name: Run composer install if composer.json exists
         if: steps.check_files.outputs.files_exists == 'true'
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
-
+        
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip -r release.zip . -x "node_modules/*" ".git/*"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -64,15 +74,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6C24752A7AED43529EDC18109A97E7FA }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_DCF30F68602A43A5AE47F395F4ADE7AC }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_74A35731AA9B441F8700B287481BB731 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_375E4C540A4F42F7BD64E1349882EE07 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6AF35DA8E53D4D11A226F0D5EDFDC29B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F377E45B90E944AC84050FEF63036851 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'laravel-praktikum-web-2'
+          app-name: 'praktikumweb2'
           slot-name: 'Production'
           package: .
           
